@@ -1,23 +1,20 @@
-from fastapi import APIRouter
+from app.backend.db import Base
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean, Float
+from sqlalchemy.orm import relationship
+from app.models import *
 
-router = APIRouter(prefix="/user", tags=["user"])
 
-@router.get("/")
-async def all_users():
-    pass
+class User(Base):
+    __tablename__ = "users"
+    # __table_args__ = {'keep_existing': True}                           #удобно наследовать для вывода
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String)
+    firstname = Column(String)
+    lastname = Column(String)
+    age = Column(Integer)
+    slug = Column(String, unique=True, index=True)
 
-@router.get("/user_id")
-async def user_by_id():
-    pass
+    tasks = relationship('Task', back_populates='user')      #связь один ко многим
 
-@router.post("/create")
-async def creaty_user():
-    pass
-
-@router.put("/update")
-async def update_user():
-    pass
-
-@router.delete("/delete")
-async def delete_user():
-    pass
+from sqlalchemy.schema import CreateTable
+print(CreateTable(User.__table__))
